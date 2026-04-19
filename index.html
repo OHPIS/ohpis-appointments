@@ -640,8 +640,9 @@
         appts.forEach(function(appt, idx) {
           var statusColor = appt.status === 'Approved' ? '#00C851' : '#CC0000';
           var statusBg    = appt.status === 'Approved' ? '#e8f5ee' : '#fdf0f0';
-          html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;">';
-          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;">';
+          html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;position:relative;">';
+          html += '<button type="button" onclick="this.parentElement.style.display=\'none\'" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:1rem;color:#aaa;cursor:pointer;padding:0;line-height:1;">✕</button>';
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;padding-right:1.2rem;">';
           html += '<strong style="font-size:0.95rem;">' + appt.studentName + '</strong>';
           html += '<span style="background:' + statusBg + ';color:' + statusColor + ';font-weight:700;font-size:0.82rem;padding:4px 14px;border-radius:20px;border:1px solid ' + statusColor + ';">' + (appt.status || 'Pending') + '</span>';
           html += '</div>';
@@ -653,7 +654,7 @@
           html += '<div style="grid-column:1/-1;"><span style="color:#999;">Reason:</span> ' + appt.reason + '</div>';
           html += '</div>';
           if (appt.teacherMsg) {
-            html += '<div style="margin-top:0.6rem;background:#f0f4ff;border-left:3px solid #1A2E6B;border-radius:0 8px 8px 0;padding:8px 12px;font-size:0.83rem;"><span style="color:#1A2E6B;font-weight:600;">Message from teacher:</span> ' + appt.teacherMsg + '</div>';
+            html += '<div style="margin-top:0.6rem;background:#f0f4ff;border-left:3px solid #1A2E6B;border-radius:0 8px 8px 0;padding:8px 12px;font-size:0.83rem;word-wrap:break-word;overflow-wrap:break-word;white-space:pre-wrap;"><span style="color:#1A2E6B;font-weight:600;">Message from teacher:</span> ' + appt.teacherMsg + '</div>';
           }
           // Edit section
           html += '<div style="margin-top:0.8rem;border-top:1px solid #eee;padding-top:0.8rem;">';
@@ -789,8 +790,9 @@
         appts.forEach(function(appt, idx) {
           var statusColor = appt.status === 'Approved' ? '#00C851' : appt.status === 'Not Approved' ? '#CC0000' : '#FF6D00';
           var statusBg    = appt.status === 'Approved' ? '#e8f5ee'  : appt.status === 'Not Approved' ? '#fdf0f0'  : '#fff8f0';
-          html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;">';
-          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;">';
+          html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;position:relative;">';
+          html += '<button type="button" onclick="this.parentElement.style.display=\'none\'" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:1rem;color:#aaa;cursor:pointer;padding:0;line-height:1;">✕</button>';
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;padding-right:1.2rem;">';
           html += '<strong style="font-size:0.95rem;">' + appt.studentName + '</strong>';
           html += '<span style="background:' + statusBg + ';color:' + statusColor + ';font-weight:700;font-size:0.82rem;padding:4px 14px;border-radius:20px;border:1px solid ' + statusColor + ';">' + (appt.status || 'Pending') + '</span>';
           html += '</div>';
