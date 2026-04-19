@@ -390,6 +390,9 @@
       </div>
 
       <div class="submit-row">
+        <div id="time-lock-msg" style="display:none;background:#fdf0f0;border:1px solid #f5bfbf;color:#8b1a1a;border-radius:8px;padding:0.7rem 1rem;font-size:0.85rem;margin-bottom:0.8rem;text-align:center;">
+          🔒 Appointment requests and edits are only accepted between <strong>7:30 AM – 12:00 PM</strong> Jamaica time.
+        </div>
         <button type="submit" id="submitBtn">Submit Appointment Request</button>
         <p class="submit-note">Your information is only used for school appointment scheduling.</p>
       </div>
@@ -424,6 +427,37 @@
 
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('apptDate').min = today;
+
+  // ── Time lock: 7:30AM – 12:00PM Jamaica time (UTC-5) ─────────
+  function getJamaicaHourMinute() {
+    var d = new Date();
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    var jamaica = new Date(utc + (-5 * 60 * 60000));
+    return { h: jamaica.getHours(), m: jamaica.getMinutes() };
+  }
+
+  function isFormOpen() {
+    var t = getJamaicaHourMinute();
+    var mins = t.h * 60 + t.m;
+    return mins >= (7 * 60 + 30) && mins < (12 * 60);
+  }
+
+  function applyTimeLock() {
+    var open      = isFormOpen();
+    var submitBtn = document.querySelector('button[type="submit"]');
+    var searchBtn = document.querySelector('#check-result button') ;
+    var lockMsg   = document.getElementById('time-lock-msg');
+    if (!open) {
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.5'; submitBtn.style.cursor = 'not-allowed'; }
+      if (lockMsg)   lockMsg.style.display = 'block';
+    } else {
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; submitBtn.style.cursor = ''; }
+      if (lockMsg)   lockMsg.style.display = 'none';
+    }
+  }
+
+  applyTimeLock();
+  setInterval(applyTimeLock, 60000);
 
   document.getElementById('appointmentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -521,8 +555,8 @@
         }
         var html = '';
         appts.forEach(function(appt, idx) {
-          var statusColor = appt.status === 'Approved' ? '#00C851' : appt.status === 'Declined' ? '#CC0000' : '#FF6D00';
-          var statusBg    = appt.status === 'Approved' ? '#e8f5ee' : appt.status === 'Declined' ? '#fdf0f0' : '#fff8f0';
+          var statusColor = appt.status === 'Approved' ? '#00C851' : '#CC0000';
+          var statusBg    = appt.status === 'Approved' ? '#e8f5ee' : '#fdf0f0';
           html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;">';
           html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;">';
           html += '<strong style="font-size:0.95rem;">' + appt.studentName + '</strong>';
@@ -546,7 +580,7 @@
           html += '<input type="date" id="edit-date-' + idx + '" value="' + appt.apptDate + '" min="' + today + '" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.45rem 0.6rem;width:100%;outline:none;"/></div>';
           html += '<div><label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Preferred Time</label>';
           html += '<select id="edit-time-' + idx + '" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.45rem 0.6rem;width:100%;outline:none;-webkit-appearance:none;">';
-          var times = ['Any available','7:30 AM','8:00 AM','8:30 AM','9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM'];
+          var times = ['— Any available —','9:00 AM – 9:30 AM','9:30 AM – 10:00 AM','10:00 AM – 10:30 AM','10:30 AM – 11:00 AM','11:00 AM – 11:30 AM','11:30 AM – 12:00 PM','12:00 PM – 12:30 PM','12:30 PM – 1:00 PM','1:00 PM – 1:30 PM','1:30 PM – 2:00 PM'];
           times.forEach(function(t) {
             html += '<option' + (t === appt.apptTime ? ' selected' : '') + '>' + t + '</option>';
           });
@@ -567,6 +601,12 @@
   }
 
   async function saveEdits(row, idx) {
+    if (!isFormOpen()) {
+      var statusEl = document.getElementById('edit-status-' + idx);
+      statusEl.style.color = '#8b1a1a';
+      statusEl.textContent = '🔒 Edits only accepted 7:30 AM – 12:00 PM Jamaica time.';
+      return;
+    }
     var comments = document.getElementById('edit-comments-' + idx).value.trim();
     var apptDate = document.getElementById('edit-date-' + idx).value;
     var apptTime = document.getElementById('edit-time-' + idx).value;
@@ -576,7 +616,7 @@
     try {
       var response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'updateAppointment', row: row, comments: comments, apptDate: apptDate, apptTime: apptTime }),
+        body: JSON.stringify({ action: 'updateAppointment', row: row, comments: comments, apptDate: apptDate, apptTime: apptTime, status: 'Updated' }),
         headers: { 'Content-Type': 'text/plain' }
       });
       var result = await response.json();
