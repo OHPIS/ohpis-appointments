@@ -504,7 +504,10 @@
       return;
     }
     resultEl.innerHTML = '<p style="color:#666;font-size:0.85rem;">Searching...</p>';
-    fetch(SCRIPT_URL + '?action=getAppointment&studentName=' + encodeURIComponent(name))
+    fetch(SCRIPT_URL + '?action=getAppointment&studentName=' + encodeURIComponent(name), {
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain' }
+      })
       .then(function(r){ return r.json(); })
       .then(function(res) {
         if (res.result === 'notfound') {
@@ -553,8 +556,8 @@
         });
         resultEl.innerHTML = html;
       })
-      .catch(function() {
-        resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Error connecting. Please try again.</p>';
+      .catch(function(err) {
+        resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Error connecting: ' + err.message + '</p>';
       });
   }
 
