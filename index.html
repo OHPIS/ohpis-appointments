@@ -403,56 +403,64 @@
   </div>
 </div>
 
-<div class="container" style="margin-top:2rem;">
-  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">🔍 Check or Edit Your Appointment</div>
-    <p style="font-size:0.85rem;color:#666;margin:0.8rem 0 1.2rem;line-height:1.6;">Enter the student's name <strong>exactly as it was entered</strong> when booking the appointment to view or update your request.</p>
-    <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:1rem;">
-      <div>
-        <label style="font-size:0.82rem;font-weight:500;color:#444;display:block;margin-bottom:4px;">Student Name</label>
-        <input type="text" id="check-name" placeholder="e.g. John Smith" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;width:100%;outline:none;"/>
-      </div>
-      <button type="button" onclick="checkAppointment()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
-    </div>
-    <div id="check-result"></div>
-  </div>
-</div>
+<div class="container" style="margin-top:2rem;margin-bottom:1rem;">
+  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden;">
 
-<!-- TEACHER PANEL -->
-<div class="container" style="margin-top:1.5rem;">
-  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">👩‍🏫 Teacher — View & Manage Appointments</div>
-    <div id="teacher-locked" style="text-align:center;padding:1rem 0;">
-      <p style="font-size:0.85rem;color:#666;margin-bottom:0.8rem;">Enter teacher password to access appointment management.</p>
-      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;max-width:340px;margin:0 auto;">
-        <input type="password" id="teacher-pw-input" placeholder="Teacher password" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;" onkeydown="if(event.key==='Enter')unlockTeacher()"/>
-        <button type="button" onclick="unlockTeacher()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;">Enter</button>
-      </div>
-      <div id="teacher-pw-error" style="font-size:0.8rem;color:#CC0000;margin-top:6px;min-height:1rem;"></div>
+    <!-- TAB BUTTONS -->
+    <div style="display:flex;border-bottom:2px solid #e8ecf8;">
+      <button type="button" id="ptab-parents" onclick="switchApptTab('parents')" style="flex:1;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;padding:0.85rem 0.5rem;border:none;cursor:pointer;background:#1A2E6B;color:#fff;transition:all 0.18s;">👨‍👩‍👧 Parents</button>
+      <button type="button" id="ptab-teachers" onclick="switchApptTab('teachers')" style="flex:1;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;padding:0.85rem 0.5rem;border:none;cursor:pointer;background:#f5f7fc;color:#666;transition:all 0.18s;">👩‍🏫 Teachers</button>
+      <button type="button" id="ptab-admin" onclick="switchApptTab('admin')" style="flex:1;font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;padding:0.85rem 0.5rem;border:none;cursor:pointer;background:#f5f7fc;color:#666;transition:all 0.18s;">🔧 Admin</button>
     </div>
-    <div id="teacher-panel" style="display:none;">
-      <p style="font-size:0.85rem;color:#666;margin:0 0 1rem;">Search appointments assigned to your name <strong>exactly as parents entered it</strong>.</p>
-      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:1rem;">
-        <input type="text" id="teacher-name-input" placeholder="e.g. Mrs. Campbell" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;" onkeydown="if(event.key==='Enter')searchTeacherAppts()"/>
-        <button type="button" onclick="searchTeacherAppts()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
-      </div>
-      <div id="teacher-result"></div>
-    </div>
-  </div>
-</div>
 
-<!-- ADMIN PANEL -->
-<div class="container" style="margin-top:1.5rem;margin-bottom:1rem;">
-  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">🔧 Developer</div>
-    <div id="admin-locked-appt" style="display:flex;gap:8px;align-items:center;max-width:340px;">
-      <input type="password" id="admin-pw-appt" placeholder="Admin password" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;outline:none;flex:1;" onkeydown="if(event.key==='Enter')unlockAdmin()"/>
-      <button type="button" onclick="unlockAdmin()" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.52rem 1rem;cursor:pointer;">Enter</button>
+    <!-- PARENTS TAB -->
+    <div id="appt-tab-parents" style="padding:1.8rem;">
+      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">🔍 Check or Edit Your Appointment</div>
+      <p style="font-size:0.85rem;color:#666;margin:0.8rem 0 1.2rem;line-height:1.6;">Enter the student's name <strong>exactly as it was entered</strong> when booking to view or update your request.</p>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-bottom:1rem;">
+        <div>
+          <label style="font-size:0.82rem;font-weight:500;color:#444;display:block;margin-bottom:4px;">Student Name</label>
+          <input type="text" id="check-name" placeholder="e.g. John Smith" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;width:100%;outline:none;"/>
+        </div>
+        <button type="button" onclick="checkAppointment()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
+      </div>
+      <div id="check-result"></div>
     </div>
-    <div id="admin-pw-error-appt" style="font-size:0.8rem;color:#CC0000;margin-top:4px;min-height:1rem;"></div>
-    <div id="admin-panel-appt" style="display:none;margin-top:0.8rem;">
-      <button type="button" id="dev-override-appt-btn" onclick="toggleDevOverrideAppt()" style="font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;background:none;border:1.5px solid #dde3f0;border-radius:8px;color:#666;padding:0.55rem 1rem;cursor:pointer;width:100%;">🔓 Enable form (bypass time lock)</button>
+
+    <!-- TEACHERS TAB -->
+    <div id="appt-tab-teachers" style="padding:1.8rem;display:none;">
+      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">👩‍🏫 Teacher — Manage Appointments</div>
+      <div id="teacher-locked" style="text-align:center;padding:0.5rem 0 1rem;">
+        <p style="font-size:0.85rem;color:#666;margin-bottom:0.8rem;">Enter teacher password to access appointment management.</p>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;max-width:340px;margin:0 auto;">
+          <input type="password" id="teacher-pw-input" placeholder="Teacher password" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;" onkeydown="if(event.key==='Enter')unlockTeacher()"/>
+          <button type="button" onclick="unlockTeacher()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;">Enter</button>
+        </div>
+        <div id="teacher-pw-error" style="font-size:0.8rem;color:#CC0000;margin-top:6px;min-height:1rem;"></div>
+      </div>
+      <div id="teacher-panel" style="display:none;">
+        <p style="font-size:0.85rem;color:#666;margin:0 0 1rem;">Enter your class name to see all appointment requests for that class.</p>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:1rem;">
+          <input type="text" id="teacher-class-input" placeholder="e.g. Grade 3B" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;" onkeydown="if(event.key==='Enter')searchTeacherAppts()"/>
+          <button type="button" onclick="searchTeacherAppts()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
+        </div>
+        <div id="teacher-result"></div>
+      </div>
     </div>
+
+    <!-- ADMIN TAB -->
+    <div id="appt-tab-admin" style="padding:1.8rem;display:none;">
+      <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">🔧 Developer</div>
+      <div id="admin-locked-appt" style="display:flex;gap:8px;align-items:center;max-width:340px;">
+        <input type="password" id="admin-pw-appt" placeholder="Admin password" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;outline:none;flex:1;" onkeydown="if(event.key==='Enter')unlockAdmin()"/>
+        <button type="button" onclick="unlockAdmin()" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.52rem 1rem;cursor:pointer;">Enter</button>
+      </div>
+      <div id="admin-pw-error-appt" style="font-size:0.8rem;color:#CC0000;margin-top:4px;min-height:1rem;"></div>
+      <div id="admin-panel-appt" style="display:none;margin-top:0.8rem;">
+        <button type="button" id="dev-override-appt-btn" onclick="toggleDevOverrideAppt()" style="font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;background:none;border:1.5px solid #dde3f0;border-radius:8px;color:#666;padding:0.55rem 1rem;cursor:pointer;width:100%;">🔓 Enable form (bypass time lock)</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -729,19 +737,19 @@
   }
 
   function searchTeacherAppts() {
-    var name     = document.getElementById('teacher-name-input').value.trim();
+    var cls      = document.getElementById('teacher-class-input').value.trim();
     var resultEl = document.getElementById('teacher-result');
-    if (!name) {
-      resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Please enter your name.</p>';
+    if (!cls) {
+      resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Please enter the class name.</p>';
       return;
     }
     resultEl.innerHTML = '<p style="color:#666;font-size:0.85rem;">Searching...</p>';
-    fetch(SCRIPT_URL + '?action=getByTeacher&teacherName=' + encodeURIComponent(name), { redirect: 'follow' })
+    fetch(SCRIPT_URL + '?action=getByClass&studentClass=' + encodeURIComponent(cls), { redirect: 'follow' })
       .then(function(r){ return r.json(); })
       .then(function(res) {
         var appts = res.appointments || [];
         if (res.result === 'notfound' || appts.length === 0) {
-          resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;background:#fdf0f0;border:1px solid #f5bfbf;border-radius:8px;padding:0.7rem 1rem;">No appointments found for <strong>' + name + '</strong>.</p>';
+          resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;background:#fdf0f0;border:1px solid #f5bfbf;border-radius:8px;padding:0.7rem 1rem;">No appointments found for class <strong>' + cls + '</strong>.</p>';
           return;
         }
         var html = '';
@@ -803,6 +811,22 @@
       statusEl.style.color = '#8b1a1a';
       statusEl.textContent = '❌ Error saving. Please try again.';
     }
+  }
+  // ── TAB SWITCHING ────────────────────────────────────────────
+  function switchApptTab(tab) {
+    ['parents','teachers','admin'].forEach(function(t) {
+      var panel = document.getElementById('appt-tab-' + t);
+      var btn   = document.getElementById('ptab-' + t);
+      if (t === tab) {
+        panel.style.display = 'block';
+        btn.style.background = '#1A2E6B';
+        btn.style.color      = '#fff';
+      } else {
+        panel.style.display = 'none';
+        btn.style.background = '#f5f7fc';
+        btn.style.color      = '#666';
+      }
+    });
   }
 
 </script>
