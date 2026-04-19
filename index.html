@@ -418,6 +418,44 @@
   </div>
 </div>
 
+<!-- TEACHER PANEL -->
+<div class="container" style="margin-top:1.5rem;">
+  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">👩‍🏫 Teacher — View & Manage Appointments</div>
+    <div id="teacher-locked" style="text-align:center;padding:1rem 0;">
+      <p style="font-size:0.85rem;color:#666;margin-bottom:0.8rem;">Enter teacher password to access appointment management.</p>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;max-width:340px;margin:0 auto;">
+        <input type="password" id="teacher-pw-input" placeholder="Teacher password" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;" onkeydown="if(event.key==='Enter')unlockTeacher()"/>
+        <button type="button" onclick="unlockTeacher()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;">Enter</button>
+      </div>
+      <div id="teacher-pw-error" style="font-size:0.8rem;color:#CC0000;margin-top:6px;min-height:1rem;"></div>
+    </div>
+    <div id="teacher-panel" style="display:none;">
+      <p style="font-size:0.85rem;color:#666;margin:0 0 1rem;">Search appointments assigned to your name <strong>exactly as parents entered it</strong>.</p>
+      <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:1rem;">
+        <input type="text" id="teacher-name-input" placeholder="e.g. Mrs. Campbell" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;" onkeydown="if(event.key==='Enter')searchTeacherAppts()"/>
+        <button type="button" onclick="searchTeacherAppts()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
+      </div>
+      <div id="teacher-result"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="container" style="margin-top:1.5rem;margin-bottom:1rem;">
+  <div style="background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+    <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#1A2E6B;margin-bottom:0.8rem;padding-bottom:0.5rem;border-bottom:1.5px solid #e8ecf8;">🔧 Developer</div>
+    <div id="admin-locked-appt" style="display:flex;gap:8px;align-items:center;max-width:340px;">
+      <input type="password" id="admin-pw-appt" placeholder="Admin password" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;outline:none;flex:1;" onkeydown="if(event.key==='Enter')unlockAdmin()"/>
+      <button type="button" onclick="unlockAdmin()" style="font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.52rem 1rem;cursor:pointer;">Enter</button>
+    </div>
+    <div id="admin-pw-error-appt" style="font-size:0.8rem;color:#CC0000;margin-top:4px;min-height:1rem;"></div>
+    <div id="admin-panel-appt" style="display:none;margin-top:0.8rem;">
+      <button type="button" id="dev-override-appt-btn" onclick="toggleDevOverrideAppt()" style="font-family:'DM Sans',sans-serif;font-size:0.88rem;font-weight:600;background:none;border:1.5px solid #dde3f0;border-radius:8px;color:#666;padding:0.55rem 1rem;cursor:pointer;width:100%;">🔓 Enable form (bypass time lock)</button>
+    </div>
+  </div>
+</div>
+
 <div class="site-footer">
   © Old Harbour Primary &amp; Infant School &nbsp;·&nbsp; Old Harbour, Saint Catherine, Jamaica &nbsp;·&nbsp; Est. 1875
 </div>
@@ -572,6 +610,9 @@
           if (appt.comments) {
             html += '<div style="margin-top:0.6rem;font-size:0.83rem;color:#555;"><span style="color:#999;">Comments:</span> ' + appt.comments + '</div>';
           }
+          if (appt.teacherMsg) {
+            html += '<div style="margin-top:0.6rem;background:#f0f4ff;border-left:3px solid #1A2E6B;border-radius:0 8px 8px 0;padding:8px 12px;font-size:0.83rem;"><span style="color:#1A2E6B;font-weight:600;">Message from teacher:</span> ' + appt.teacherMsg + '</div>';
+          }
           // Edit section
           html += '<div style="margin-top:0.8rem;border-top:1px solid #eee;padding-top:0.8rem;">';
           html += '<div style="font-size:0.78rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.7rem;">Edit Request</div>';
@@ -633,6 +674,136 @@
   document.getElementById('check-name').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') checkAppointment();
   });
+
+  // ── PASSWORDS ────────────────────────────────────────────────
+  var PW_ADMIN   = 'admin2026';
+  var PW_TEACHER = 'teacher2026';
+
+  // ── ADMIN OVERRIDE ───────────────────────────────────────────
+  var devOverrideAppt = false;
+
+  function unlockAdmin() {
+    var entered = document.getElementById('admin-pw-appt').value;
+    if (entered === PW_ADMIN) {
+      document.getElementById('admin-locked-appt').style.display = 'none';
+      document.getElementById('admin-pw-error-appt').textContent = '';
+      document.getElementById('admin-panel-appt').style.display = 'block';
+    } else {
+      document.getElementById('admin-pw-error-appt').textContent = 'Incorrect password.';
+      document.getElementById('admin-pw-appt').value = '';
+    }
+  }
+
+  function toggleDevOverrideAppt() {
+    devOverrideAppt = !devOverrideAppt;
+    var btn = document.getElementById('dev-override-appt-btn');
+    if (devOverrideAppt) {
+      btn.textContent = '🔒 Disable override (active)';
+      btn.style.background = '#e8f5ee';
+      btn.style.borderColor = '#00C851';
+      btn.style.color = '#145229';
+    } else {
+      btn.textContent = '🔓 Enable form (bypass time lock)';
+      btn.style.background = '';
+      btn.style.borderColor = '#dde3f0';
+      btn.style.color = '#666';
+    }
+    applyTimeLock();
+  }
+
+  // Override isFormOpen to check devOverride
+  var _origIsFormOpen = isFormOpen;
+  isFormOpen = function() { return devOverrideAppt || _origIsFormOpen(); };
+
+  // ── TEACHER PANEL ────────────────────────────────────────────
+  function unlockTeacher() {
+    var entered = document.getElementById('teacher-pw-input').value;
+    if (entered === PW_TEACHER) {
+      document.getElementById('teacher-locked').style.display = 'none';
+      document.getElementById('teacher-panel').style.display = 'block';
+      document.getElementById('teacher-pw-error').textContent = '';
+    } else {
+      document.getElementById('teacher-pw-error').textContent = 'Incorrect password.';
+      document.getElementById('teacher-pw-input').value = '';
+    }
+  }
+
+  function searchTeacherAppts() {
+    var name     = document.getElementById('teacher-name-input').value.trim();
+    var resultEl = document.getElementById('teacher-result');
+    if (!name) {
+      resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Please enter your name.</p>';
+      return;
+    }
+    resultEl.innerHTML = '<p style="color:#666;font-size:0.85rem;">Searching...</p>';
+    fetch(SCRIPT_URL + '?action=getByTeacher&teacherName=' + encodeURIComponent(name), { redirect: 'follow' })
+      .then(function(r){ return r.json(); })
+      .then(function(res) {
+        var appts = res.appointments || [];
+        if (res.result === 'notfound' || appts.length === 0) {
+          resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;background:#fdf0f0;border:1px solid #f5bfbf;border-radius:8px;padding:0.7rem 1rem;">No appointments found for <strong>' + name + '</strong>.</p>';
+          return;
+        }
+        var html = '';
+        appts.forEach(function(appt, idx) {
+          var statusColor = appt.status === 'Approved' ? '#00C851' : appt.status === 'Not Approved' ? '#CC0000' : '#FF6D00';
+          var statusBg    = appt.status === 'Approved' ? '#e8f5ee'  : appt.status === 'Not Approved' ? '#fdf0f0'  : '#fff8f0';
+          html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;">';
+          html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:8px;">';
+          html += '<strong style="font-size:0.95rem;">' + appt.studentName + '</strong>';
+          html += '<span style="background:' + statusBg + ';color:' + statusColor + ';font-weight:700;font-size:0.82rem;padding:4px 14px;border-radius:20px;border:1px solid ' + statusColor + ';">' + (appt.status || 'Pending') + '</span>';
+          html += '</div>';
+          html += '<div style="font-size:0.83rem;color:#555;display:grid;grid-template-columns:1fr 1fr;gap:4px 1rem;margin-bottom:0.8rem;">';
+          html += '<div><span style="color:#999;">Class:</span> ' + appt.studentClass + '</div>';
+          html += '<div><span style="color:#999;">Parent:</span> ' + appt.parentName + '</div>';
+          html += '<div><span style="color:#999;">Date:</span> ' + appt.apptDate + '</div>';
+          html += '<div><span style="color:#999;">Time:</span> ' + appt.apptTime + '</div>';
+          html += '<div style="grid-column:1/-1;"><span style="color:#999;">Reason:</span> ' + appt.reason + '</div>';
+          if (appt.comments) html += '<div style="grid-column:1/-1;"><span style="color:#999;">Comments:</span> ' + appt.comments + '</div>';
+          html += '</div>';
+          // Teacher action section
+          html += '<div style="border-top:1px solid #eee;padding-top:0.8rem;">';
+          html += '<div style="font-size:0.78rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.5rem;">Your Response</div>';
+          html += '<div style="display:flex;gap:8px;margin-bottom:0.6rem;">';
+          html += '<button type="button" onclick="setTeacherStatus(' + appt.row + ',' + idx + ',\'Approved\')" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;background:#e8f5ee;color:#145229;border:1.5px solid #00C851;border-radius:8px;padding:0.5rem;cursor:pointer;">✅ Approved</button>';
+          html += '<button type="button" onclick="setTeacherStatus(' + appt.row + ',' + idx + ',\'Not Approved\')" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;background:#fdf0f0;color:#8b1a1a;border:1.5px solid #CC0000;border-radius:8px;padding:0.5rem;cursor:pointer;">❌ Not Approved</button>';
+          html += '</div>';
+          html += '<label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Message to parent</label>';
+          html += '<textarea id="teacher-msg-' + idx + '" rows="2" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Optional message visible to the parent...">' + (appt.teacherMsg || '') + '</textarea>';
+          html += '<div id="teacher-action-status-' + idx + '" style="font-size:0.82rem;margin-top:4px;min-height:1rem;"></div>';
+          html += '</div>';
+          html += '</div>';
+        });
+        resultEl.innerHTML = html;
+      })
+      .catch(function() {
+        resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Error connecting. Please try again.</p>';
+      });
+  }
+
+  async function setTeacherStatus(row, idx, status) {
+    var msg      = document.getElementById('teacher-msg-' + idx).value.trim();
+    var statusEl = document.getElementById('teacher-action-status-' + idx);
+    statusEl.style.color = '#666';
+    statusEl.textContent = 'Saving...';
+    try {
+      var response = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'updateAppointment', row: row, status: status, teacherMsg: msg }),
+        headers: { 'Content-Type': 'text/plain' }
+      });
+      var result = await response.json();
+      if (result.result === 'success') {
+        statusEl.style.color = '#145229';
+        statusEl.textContent = '✅ Status set to "' + status + '" and message saved.';
+        // Refresh the search results
+        setTimeout(searchTeacherAppts, 1200);
+      } else { throw new Error(result.message); }
+    } catch(e) {
+      statusEl.style.color = '#8b1a1a';
+      statusEl.textContent = '❌ Error saving. Please try again.';
+    }
+  }
 
 </script>
 </body>
