@@ -696,7 +696,7 @@
     try {
       var response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'updateAppointment', row: row, apptDate: apptDate, apptTime: apptTime, status: 'Updated' }),
+        body: JSON.stringify({ action: 'updateAppointment', row: row, apptDate: apptDate, apptTime: apptTime, status: 'Pending' }),
         headers: { 'Content-Type': 'text/plain' }
       });
       var result = await response.json();
@@ -807,7 +807,7 @@
           html += '<button type="button" onclick="setTeacherStatus(' + appt.row + ',' + idx + ',\'Not Approved\')" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;background:#fdf0f0;color:#8b1a1a;border:1.5px solid #CC0000;border-radius:8px;padding:0.5rem;cursor:pointer;">❌ Not Approved</button>';
           html += '</div>';
           html += '<label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Message to parent</label>';
-          html += '<textarea id="teacher-msg-' + idx + '" rows="2" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Optional message visible to the parent...">' + (appt.teacherMsg || '') + '</textarea>';
+          html += '<textarea id="teacher-msg-' + idx + '" rows="2" maxlength="250" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Optional message visible to the parent (max 250 chars)...">' + (appt.teacherMsg || '') + '</textarea>';
           html += '<div id="teacher-action-status-' + idx + '" style="font-size:0.82rem;margin-top:4px;min-height:1rem;"></div>';
           html += '</div>';
           html += '</div>';
