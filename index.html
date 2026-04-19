@@ -230,6 +230,8 @@
 
 <div class="container">
 
+  <div id="time-lock-msg" style="display:none;background:#fdf0f0;border:1px solid #f5bfbf;color:#8b1a1a;border-radius:8px;padding:0.8rem 1rem;font-size:0.88rem;margin-bottom:1rem;text-align:center;">🔒 Appointment requests are only accepted between <strong>7:30 AM – 12:00 PM</strong> Jamaica time. Please come back during those hours.</div>
+
   <div class="intro-notice">
     <strong>Welcome!</strong> Please complete the form below to request an appointment with your child's teacher.
     Once submitted, the school will confirm the date and time with you.
@@ -250,6 +252,12 @@
           <label for="studentClass">Class / Grade <span class="req">*</span></label>
           <select id="studentClass" name="studentClass" required>
             <option value="">— Select class —</option>
+            <optgroup label="Infant">
+              <option>Infant 1H</option>
+              <option>Infant 1T</option>
+              <option>Infant 2L</option>
+              <option>Infant 2K</option>
+            </optgroup>
             <optgroup label="Grade 1">
               <option>Grade 1O</option>
               <option>Grade 1L</option>
@@ -386,9 +394,6 @@
       </div>
 
       <div class="submit-row">
-        <div id="time-lock-msg" style="display:none;background:#fdf0f0;border:1px solid #f5bfbf;color:#8b1a1a;border-radius:8px;padding:0.7rem 1rem;font-size:0.85rem;margin-bottom:0.8rem;text-align:center;">
-          🔒 Appointment requests and edits are only accepted between <strong>7:30 AM – 12:00 PM</strong> Jamaica time.
-        </div>
         <button type="submit" id="submitBtn">Submit Appointment Request</button>
         <p class="submit-note">Your information is only used for school appointment scheduling.</p>
       </div>
@@ -439,6 +444,12 @@
         <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:1rem;">
           <select id="teacher-class-input" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;">
             <option value="">— Select class —</option>
+            <optgroup label="Infant">
+              <option>Infant 1H</option>
+              <option>Infant 1T</option>
+              <option>Infant 2L</option>
+              <option>Infant 2K</option>
+            </optgroup>
             <optgroup label="Grade 1">
               <option>Grade 1O</option><option>Grade 1L</option><option>Grade 1D</option><option>Grade 1H</option>
               <option>Grade 1A</option><option>Grade 1R</option><option>Grade 1B</option><option>Grade 1U</option>
