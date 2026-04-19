@@ -514,8 +514,13 @@
           resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;background:#fdf0f0;border:1px solid #f5bfbf;border-radius:8px;padding:0.7rem 1rem;">No appointment found for <strong>' + name + '</strong>. Please check the name and try again.</p>';
           return;
         }
+        var appts = res.appointments || [];
+        if (appts.length === 0) {
+          resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;background:#fdf0f0;border:1px solid #f5bfbf;border-radius:8px;padding:0.7rem 1rem;">No appointment found for <strong>' + name + '</strong>. Please check the name and try again.</p>';
+          return;
+        }
         var html = '';
-        res.appointments.forEach(function(appt, idx) {
+        appts.forEach(function(appt, idx) {
           var statusColor = appt.status === 'Approved' ? '#00C851' : appt.status === 'Declined' ? '#CC0000' : '#FF6D00';
           var statusBg    = appt.status === 'Approved' ? '#e8f5ee' : appt.status === 'Declined' ? '#fdf0f0' : '#fff8f0';
           html += '<div style="border:1px solid #dde3f0;border-radius:10px;padding:1.2rem;margin-bottom:1rem;background:#fafbff;">';
@@ -557,7 +562,7 @@
         resultEl.innerHTML = html;
       })
       .catch(function(err) {
-        resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Error connecting: ' + err.message + '</p>';
+        resultEl.innerHTML = '<p style="color:#8b1a1a;font-size:0.85rem;">Error connecting. Please try again.</p>';
       });
   }
 
