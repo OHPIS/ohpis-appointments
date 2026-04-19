@@ -809,7 +809,9 @@
           html += '<button type="button" onclick="setTeacherStatus(' + appt.row + ',' + idx + ',\'Not Approved\')" style="flex:1;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;background:#fdf0f0;color:#8b1a1a;border:1.5px solid #CC0000;border-radius:8px;padding:0.5rem;cursor:pointer;">❌ Not Approved</button>';
           html += '</div>';
           html += '<label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Message to parent</label>';
-          html += '<textarea id="teacher-msg-' + idx + '" rows="2" maxlength="250" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Optional message visible to the parent (max 250 chars)...">' + (appt.teacherMsg || '') + '</textarea>';
+          var msgLen = (appt.teacherMsg || '').length;
+          html += '<textarea id="teacher-msg-' + idx + '" rows="2" maxlength="250" oninput="var r=250-this.value.length;document.getElementById(\'tmsg-count-'+idx+'\').textContent=r+\' chars remaining\';document.getElementById(\'tmsg-count-'+idx+'\').style.color=r<20?\'#CC0000\':\'#999\';" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Optional message visible to the parent (max 250 chars)...">' + (appt.teacherMsg || '') + '</textarea>';
+          html += '<div id="tmsg-count-' + idx + '" style="font-size:0.76rem;color:#999;text-align:right;margin-top:2px;">' + (250 - msgLen) + ' chars remaining</div>';
           html += '<div id="teacher-action-status-' + idx + '" style="font-size:0.82rem;margin-top:4px;min-height:1rem;"></div>';
           html += '</div>';
           html += '</div>';
