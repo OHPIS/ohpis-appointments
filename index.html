@@ -365,10 +365,6 @@
           </select>
         </div>
 
-        <div class="form-group full">
-          <label for="comments">Additional Comments</label>
-          <textarea id="comments" name="comments" placeholder="Any details you'd like the teacher to know in advance…"></textarea>
-        </div>
 
       </div>
 
@@ -441,7 +437,38 @@
       <div id="teacher-panel" style="display:none;">
         <p style="font-size:0.85rem;color:#666;margin:0 0 1rem;">Enter your class name to see all appointment requests for that class.</p>
         <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:1rem;">
-          <input type="text" id="teacher-class-input" placeholder="e.g. Grade 3B" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;" onkeydown="if(event.key==='Enter')searchTeacherAppts()"/>
+          <select id="teacher-class-input" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.55rem 0.75rem;outline:none;width:100%;">
+            <option value="">— Select class —</option>
+            <optgroup label="Grade 1">
+              <option>Grade 1O</option><option>Grade 1L</option><option>Grade 1D</option><option>Grade 1H</option>
+              <option>Grade 1A</option><option>Grade 1R</option><option>Grade 1B</option><option>Grade 1U</option>
+            </optgroup>
+            <optgroup label="Grade 2">
+              <option>Grade 2O</option><option>Grade 2L</option><option>Grade 2D</option><option>Grade 2H</option>
+              <option>Grade 2A</option><option>Grade 2R</option><option>Grade 2B</option><option>Grade 2U</option>
+            </optgroup>
+            <optgroup label="Grade 3">
+              <option>Grade 3O</option><option>Grade 3L</option><option>Grade 3D</option><option>Grade 3H</option>
+              <option>Grade 3A</option><option>Grade 3R</option><option>Grade 3B</option><option>Grade 3U</option>
+            </optgroup>
+            <optgroup label="Grade 4">
+              <option>Grade 4O</option><option>Grade 4L</option><option>Grade 4D</option><option>Grade 4H</option>
+              <option>Grade 4A</option><option>Grade 4R</option><option>Grade 4B</option><option>Grade 4U</option>
+            </optgroup>
+            <optgroup label="Grade 5">
+              <option>Grade 5O</option><option>Grade 5L</option><option>Grade 5D</option><option>Grade 5H</option>
+              <option>Grade 5A</option><option>Grade 5R</option><option>Grade 5B</option><option>Grade 5U</option>
+            </optgroup>
+            <optgroup label="Grade 6">
+              <option>Grade 6O</option><option>Grade 6L</option><option>Grade 6D</option><option>Grade 6H</option>
+              <option>Grade 6A</option><option>Grade 6R</option><option>Grade 6B</option><option>Grade 6U</option>
+            </optgroup>
+            <optgroup label="Special Education">
+              <option>Special Education 1</option>
+              <option>Special Education 2</option>
+              <option>Special Education 3</option>
+            </optgroup>
+          </select>
           <button type="button" onclick="searchTeacherAppts()" style="font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.58rem 1.2rem;cursor:pointer;white-space:nowrap;">Search</button>
         </div>
         <div id="teacher-result"></div>
@@ -545,7 +572,6 @@
       apptDate:     document.getElementById('apptDate').value,
       apptTime:     document.getElementById('apptTime').value || 'Any available',
       reason:       document.getElementById('reason').value,
-      comments:     document.getElementById('comments').value.trim(),
       parentName:   document.getElementById('parentName').value.trim(),
       phone:        document.getElementById('phone').value.trim(),
     };
@@ -615,9 +641,6 @@
           html += '<div><span style="color:#999;">Time:</span> ' + appt.apptTime + '</div>';
           html += '<div style="grid-column:1/-1;"><span style="color:#999;">Reason:</span> ' + appt.reason + '</div>';
           html += '</div>';
-          if (appt.comments) {
-            html += '<div style="margin-top:0.6rem;font-size:0.83rem;color:#555;"><span style="color:#999;">Comments:</span> ' + appt.comments + '</div>';
-          }
           if (appt.teacherMsg) {
             html += '<div style="margin-top:0.6rem;background:#f0f4ff;border-left:3px solid #1A2E6B;border-radius:0 8px 8px 0;padding:8px 12px;font-size:0.83rem;"><span style="color:#1A2E6B;font-weight:600;">Message from teacher:</span> ' + appt.teacherMsg + '</div>';
           }
@@ -635,8 +658,6 @@
           });
           html += '</select></div>';
           html += '</div>';
-          html += '<label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Comments</label>';
-          html += '<textarea id="edit-comments-' + idx + '" rows="2" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.5rem 0.7rem;width:100%;outline:none;resize:vertical;" placeholder="Add or update comments...">' + (appt.comments || '') + '</textarea>';
           html += '<div id="edit-status-' + idx + '" style="font-size:0.82rem;margin-top:4px;min-height:1.2rem;"></div>';
           html += '<button type="button" onclick="saveEdits(' + appt.row + ',' + idx + ')" style="margin-top:6px;font-family:\'DM Sans\',sans-serif;font-size:0.85rem;font-weight:600;background:#1A2E6B;color:#fff;border:none;border-radius:8px;padding:0.5rem 1.2rem;cursor:pointer;">Save Changes</button>';
           html += '</div>';
@@ -656,7 +677,6 @@
       statusEl.textContent = '🔒 Edits only accepted 7:30 AM – 12:00 PM Jamaica time.';
       return;
     }
-    var comments = document.getElementById('edit-comments-' + idx).value.trim();
     var apptDate = document.getElementById('edit-date-' + idx).value;
     var apptTime = document.getElementById('edit-time-' + idx).value;
     var statusEl = document.getElementById('edit-status-' + idx);
@@ -665,7 +685,7 @@
     try {
       var response = await fetch(SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify({ action: 'updateAppointment', row: row, comments: comments, apptDate: apptDate, apptTime: apptTime, status: 'Updated' }),
+        body: JSON.stringify({ action: 'updateAppointment', row: row, apptDate: apptDate, apptTime: apptTime, status: 'Updated' }),
         headers: { 'Content-Type': 'text/plain' }
       });
       var result = await response.json();
@@ -767,7 +787,6 @@
           html += '<div><span style="color:#999;">Date:</span> ' + appt.apptDate + '</div>';
           html += '<div><span style="color:#999;">Time:</span> ' + appt.apptTime + '</div>';
           html += '<div style="grid-column:1/-1;"><span style="color:#999;">Reason:</span> ' + appt.reason + '</div>';
-          if (appt.comments) html += '<div style="grid-column:1/-1;"><span style="color:#999;">Comments:</span> ' + appt.comments + '</div>';
           html += '</div>';
           // Teacher action section
           html += '<div style="border-top:1px solid #eee;padding-top:0.8rem;">';
