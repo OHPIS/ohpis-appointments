@@ -509,8 +509,37 @@
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoQS3g7OfAGJx1BYFDLL5RNq-Qx8lk8awtKRtGFlT643WkPM6bizUGrUcaCg2IuPwW/exec";
 
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('apptDate').min = today;
+  // Next weekday from Jamaica time (skip today, skip weekends)
+  function getNextWeekday() {
+    var now    = new Date();
+    var utc    = now.getTime() + now.getTimezoneOffset() * 60000;
+    var jam    = new Date(utc + (-5 * 60 * 60000));
+    var next   = new Date(jam);
+    next.setDate(next.getDate() + 1); // start from tomorrow
+    var day = next.getDay(); // 0=Sun,6=Sat
+    if (day === 0) next.setDate(next.getDate() + 1); // Sun → Mon
+    if (day === 6) next.setDate(next.getDate() + 2); // Sat → Mon
+    return next.toISOString().split('T')[0];
+  }
+
+  function isWeekend(dateStr) {
+    var d = new Date(dateStr + 'T12:00:00');
+    var day = d.getDay();
+    return day === 0 || day === 6;
+  }
+
+  var nextWeekday = getNextWeekday();
+  const today = nextWeekday; // reuse today var for min reference
+  var apptDateEl = document.getElementById('apptDate');
+  apptDateEl.min = nextWeekday;
+  apptDateEl.addEventListener('change', function() {
+    if (isWeekend(this.value)) {
+      // Move to next Monday
+      var d = new Date(this.value + 'T12:00:00');
+      d.setDate(d.getDate() + (d.getDay() === 6 ? 2 : 1));
+      this.value = d.toISOString().split('T')[0];
+    }
+  });
 
   // ── Time lock: 7:30AM – 12:00PM Jamaica time (UTC-5) ─────────
   function getJamaicaHourMinute() {
@@ -598,7 +627,7 @@
         status.className = 'success';
         status.innerHTML = '✅ Your appointment request has been submitted successfully!<br>The school will contact you to confirm the date and time.';
         this.reset();
-        document.getElementById('apptDate').min = today;
+        document.getElementById('apptDate').min = nextWeekday;
       } else { throw new Error(result); }
     } catch (err) {
       status.className = 'error';
@@ -661,7 +690,7 @@
           html += '<div style="font-size:0.78rem;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.7rem;">Edit Request</div>';
           html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">';
           html += '<div><label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Preferred Date</label>';
-          html += '<input type="date" id="edit-date-' + idx + '" value="' + appt.apptDate + '" min="' + today + '" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.45rem 0.6rem;width:100%;outline:none;"/></div>';
+          html += '<input type="date" id="edit-date-' + idx + '" value="' + appt.apptDate + '" min="' + nextWeekday + '" onchange="if(isWeekend(this.value)){var d=new Date(this.value+\'T12:00:00\');d.setDate(d.getDate()+(d.getDay()===6?2:1));this.value=d.toISOString().split(\'T\')[0];}" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.45rem 0.6rem;width:100%;outline:none;"/></div>';
           html += '<div><label style="font-size:0.78rem;color:#999;display:block;margin-bottom:3px;">Preferred Time</label>';
           html += '<select id="edit-time-' + idx + '" style="font-family:\'DM Sans\',sans-serif;font-size:0.85rem;border:1.5px solid #dde3f0;border-radius:8px;padding:0.45rem 0.6rem;width:100%;outline:none;-webkit-appearance:none;">';
           var times = ['— Any available —','9:00 AM – 9:30 AM','9:30 AM – 10:00 AM','10:00 AM – 10:30 AM','10:30 AM – 11:00 AM','11:00 AM – 11:30 AM','11:30 AM – 12:00 PM','12:00 PM – 12:30 PM','12:30 PM – 1:00 PM','1:00 PM – 1:30 PM','1:30 PM – 2:00 PM'];
